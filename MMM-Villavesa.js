@@ -5,6 +5,7 @@ Module.register("MMM-Villavesa", {
 
 	// Defaults module config
 	defaults: {
+		symbol: "bus",
 		url: "",
 		arrayName: null,
 		tryFormatDate: false,
@@ -15,6 +16,11 @@ Module.register("MMM-Villavesa", {
 		this.getJson();
 		this.scheduleUpdate();
 	},
+
+	getStyles: function () {
+		return ["MMM-Villavesa.css"];
+	},
+
 	scheduleUpdate: function () {
 		var self = this;
 		setInterval(function () {
@@ -43,7 +49,12 @@ Module.register("MMM-Villavesa", {
 		}
 
 		var table = document.createElement("table");
+		table.id = "VILLAVESA";
 		var tbody = document.createElement("tbody");
+
+		let streetName = this.jsonData['streetName'];
+		let thead = document.createElement('thead');
+		thead.innerHTML = '<th colspan="2">' + streetName + '</th>';
 
 		var items = [];
 		if (this.config.arrayName) {
@@ -63,6 +74,7 @@ Module.register("MMM-Villavesa", {
 			tbody.appendChild(row);
 		});
 
+		table.appendChild(thead);
 		table.appendChild(tbody);
 		wrapper.appendChild(table);
 
@@ -85,6 +97,13 @@ Module.register("MMM-Villavesa", {
 
 			var cellText = document.createTextNode(valueToDisplay);
 			cell.appendChild(cellText);
+
+			if (key === "lineNumber") {
+				let iconSpan = document.createElement('span');
+				iconSpan.classList.add("fa", "fa-fw", "fa-" + this.config.symbol);
+				cell.appendChild(iconSpan);
+			}
+
 			row.appendChild(cell);
 		}
 		return row;
